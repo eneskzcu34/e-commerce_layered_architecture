@@ -1,0 +1,109 @@
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h5 class="mb-3">Ürün Güncelle</h5>
+
+<form>
+    <div class="row g-3">
+        <!-- PRODUCT -->
+        <div class="col-md-6">
+            <label class="form-label">Ürün Adı</label>
+            <input type="text" class="form-control" value="Telefon">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Fiyat</label>
+            <input type="number" class="form-control" value="15000">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Stok</label>
+            <input type="number" class="form-control" value="25">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Kategori</label>
+            <select class="form-select">
+                <option>Elektronik</option>
+            </select>
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Açıklama</label>
+            <textarea class="form-control" rows="3">Ürün açıklaması...</textarea>
+        </div>
+
+        <div class="col-md-6 d-flex align-items-end">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" checked>
+                <label class="form-check-label ms-2">Aktif</label>
+            </div>
+        </div>
+        <div class="col-12 section-title">Ürün Resimleri</div>
+
+        <div class="col-12">
+            <label class="image-upload-box">
+                <i class="bi bi-cloud-upload fs-3"></i>
+                <div>Resim seç (max 4)</div>
+                <input type="file" id="imageInput" class="d-none" multiple accept="image/*">
+            </label>
+        </div>
+        <div class="col-12">
+            <div class="row g-3 preview-container" id="previewContainer"></div>
+        </div>
+
+        <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+            <button type="button" class="btn btn-outline-secondary">İptal</button>
+            <button class="btn btn-primary">Güncelle</button>
+        </div>
+
+    </div>
+</form>
+
+<script>
+    // IMAGE PREVIEW
+    const input = document.getElementById("imageInput");
+    const previewContainer = document.getElementById("previewContainer");
+
+    input.addEventListener("change", function () {
+        previewContainer.innerHTML = "";
+
+        const files = Array.from(this.files).slice(0, 4);
+
+        files.forEach((file, index) => {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const col = document.createElement("div");
+                col.className = "col-md-3";
+
+                col.innerHTML = `
+                    <div class="img-preview ${index === 0 ? 'active' : ''}">
+                        <img src="${e.target.result}">
+                        <div class="img-actions">
+                            <input type="radio" name="mainImage" ${index === 0 ? "checked" : ""}>
+                            <button type="button" class="btn btn-sm btn-danger remove-btn">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                previewContainer.appendChild(col);
+
+                const radio = col.querySelector("input[type='radio']");
+                radio.addEventListener("change", () => {
+                    document.querySelectorAll(".img-preview").forEach(x => x.classList.remove("active"));
+                    col.querySelector(".img-preview").classList.add("active");
+                });
+
+                col.querySelector(".remove-btn").addEventListener("click", () => {
+                    col.remove();
+                });
+            };
+
+            reader.readAsDataURL(file);
+        });
+    });
+</script>

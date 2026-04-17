@@ -6,37 +6,33 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace WebUI.Controllers
+namespace E_Shopping.WebUI.Controllers
 {
     [Route("[controller]")]
-    public class ProductController : Controller
+    public class CategoryController : Controller
     {
+
         public IActionResult Index()
-        {
-            return View();
-        }
-        [Route("[action]")]
-        public IActionResult Detail()
         {
             return View();
         }
 
         [Route("/Admin/[controller]/List")]
         [HttpGet]
-        public IActionResult PAIndex()
+        public IActionResult CAIndex()
         {
             return View();
         }
 
         [Route("/Admin/[controller]/Create")]
         [HttpGet]
-        public IActionResult PACreate()
+        public IActionResult CACreate()
         {
             return View();
         }
         [Route("/Admin/[controller]/Update")]
         [HttpGet]
-        public IActionResult PAUpdate()
+        public IActionResult CAUpdate()
         {
             return View();
         }
