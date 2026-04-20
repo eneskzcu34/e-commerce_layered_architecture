@@ -1,12 +1,12 @@
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
+@model List<ProductListDto>
 <div class="d-flex justify-content-between mb-3">
     <h4>Ürünler</h4>
-    <button class="btn btn-primary">
+    <a class="btn btn-primary" asp-controller="Product" asp-action="PACreate">
         <i class="bi bi-plus"></i> Yeni Ürün
-    </button>
+    </a>
 </div>
 
 <table class="table table-bordered table-hover">
@@ -22,21 +22,43 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>1</td>
-            <td>Telefon</td>
-            <td>₺15.000</td>
-            <td>25</td>
-            <td>Elektronik</td>
-            <td><span class="badge bg-success">Aktif</span></td>
-            <td>
-                <button class="btn btn-sm btn-warning">
-                    <i class="bi bi-pencil"></i>
-                </button>
-                <button class="btn btn-sm btn-danger">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </td>
-        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>
+                    <div class="preview-container">
+                        <div class="img-preview">
+                            <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/no-image.png" : item.ImageUrl)"
+                                 alt="@item.Name" />
+                        </div>
+                    </div>
+                </td>
+                <td>@item.Name</td>
+                <td>₺@item.Price</td>
+                <td>@item.Stock</td>
+                <td>@item.CategoryName</td>
+                <td>
+                    @if (item.IsActive)
+                    {
+                        <span class="badge bg-success">Aktif</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Pasif</span>
+                    }
+                </td>
+                <td>
+                    <a asp-controller="Product" asp-action="PAUpdate" asp-route-id="@item.Id"
+                           class="btn btn-sm btn-warning">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <button class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+      
     </tbody>
 </table>

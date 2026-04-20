@@ -12,6 +12,6 @@ namespace E_Shopping.Domain.Entities
         public string Description { get; set; }
         public DateTime CreateDate { get; set; } = DateTime.Now;
         public DateTime UpdateDate { get; set; } = DateTime.Now;
-        public ICollection<Product> Products { get; set; }
+        public List<Product> Products { get; set; }
     }
 }

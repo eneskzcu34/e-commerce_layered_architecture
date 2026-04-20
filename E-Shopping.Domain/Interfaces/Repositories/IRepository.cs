@@ -15,21 +15,13 @@ namespace E_Shopping.Domain.Interfaces.Repositories
         void Update(T entity);
         void Delete(T entity);
         // Sorgulama
-        IQueryable<T> GetQueryable();
-
-        // Basit filtre
-        Task<List<T>> GetWhereAsync(Expression<Func<T, bool>> predicate);
-
-        //  Çoklu kayıt (filter + include)
-        Task<List<T>> GetWhereWithIncludeAsync(
-            Expression<Func<T, bool>> predicate,
-            params Expression<Func<T, object>>[] includes
-        );
-
-        // Tek kayıt (filter + include)
-        Task<T> GetSingleWithIncludeAsync(
-            Expression<Func<T, bool>> predicate,
-            params Expression<Func<T, object>>[] includes
-        );
+        Task<T?> GetSingleAsync(
+        Expression<Func<T, bool>> predicate,
+        params Expression<Func<T, object>>[] includes);
+        Task<List<T>> GetByFilterWithIncludesAsync(
+          Expression<Func<T, bool>> predicate,
+          params Expression<Func<T, object>>[] includes);
+        Task<List<T>> GetByFilterAsync(Expression<Func<T, bool>> predicate);
+        Task<List<T>> GetAllWithIncludesAsync(params Expression<Func<T, object>>[] includes);
     }
 }

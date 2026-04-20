@@ -13,6 +13,7 @@ namespace E_Shopping.Application.DependencyInjection
         public static void AddApplication(this IServiceCollection services)
         {
             services.AddScoped<IProductService, ProductManager>();
+            services.AddScoped<ICategoryService, CategoryManager>();
         }
     }
 }

@@ -47,29 +47,44 @@ namespace E_Shopping.Infrastructure.Persistence.Repositories
             return _context.Set<T>().AsNoTracking();
         }
 
-        public async Task<T> GetSingleWithIncludeAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+
+        public async Task<List<T>> GetAllWithIncludesAsync(params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _context.Set<T>().AsNoTracking();
+
             foreach (var include in includes)
-            {
                 query = query.Include(include);
-            }
-            return await query.FirstOrDefaultAsync(predicate);
+
+            return await query.ToListAsync();
         }
 
-        public async Task<List<T>> GetWhereAsync(Expression<Func<T, bool>> predicate)
+        public async Task<List<T>> GetByFilterAsync(Expression<Func<T, bool>> predicate)
         {
             return await _context.Set<T>().AsNoTracking().Where(predicate).ToListAsync();
         }
 
-        public async Task<List<T>> GetWhereWithIncludeAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        public async Task<List<T>> GetByFilterWithIncludesAsync(
+            Expression<Func<T, bool>> predicate,
+            params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _context.Set<T>().AsNoTracking();
+
             foreach (var include in includes)
-            {
                 query = query.Include(include);
-            }
+
             return await query.Where(predicate).ToListAsync();
+        }
+
+        public async Task<T?> GetSingleAsync(
+            Expression<Func<T, bool>> predicate,
+            params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _context.Set<T>().AsNoTracking();
+
+            foreach (var include in includes)
+                query = query.Include(include);
+
+            return await query.FirstOrDefaultAsync(predicate);
         }
 
         public void Update(T entity)

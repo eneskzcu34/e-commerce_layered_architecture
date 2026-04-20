@@ -1,12 +1,12 @@
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
+@model List<CategoryListDto>
 <div class="d-flex justify-content-between mb-3">
     <h5>Kategoriler</h5>
-    <button class="btn btn-primary">
+    <a class="btn btn-primary" asp-controller="Category" asp-action="CACreate">
         <i class="bi bi-plus"></i> Yeni Kategori
-    </button>
+    </a>
 </div>
 
 <table class="table table-hover align-middle">
@@ -21,20 +21,24 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>1</td>
-            <td>Elektronik</td>
-            <td>Elektronik ürünler için kategori</td>
-            <td><span class="badge bg-secondary">12</span></td>
-            <td>01.01.2026</td>
-            <td>
-                <button class="btn btn-sm btn-warning">
-                    <i class="bi bi-pencil"></i>
-                </button>
-                <button class="btn btn-sm btn-danger">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </td>
-        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td><span class="badge bg-secondary">@item.ProductCount</span></td>
+                <td>@item.CreateDate.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>
+                    <a asp-controller="Category" asp-action="CAUpdate" asp-route-id="@item.Id"
+                           class="btn btn-sm btn-warning">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <button class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

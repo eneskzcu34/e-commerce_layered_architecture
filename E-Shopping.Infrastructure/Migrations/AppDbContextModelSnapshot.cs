@@ -109,6 +109,10 @@ namespace E_Shopping.Infrastructure.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -226,6 +230,10 @@ namespace E_Shopping.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -247,60 +255,6 @@ namespace E_Shopping.Infrastructure.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("E_Shopping.Domain.Entities.ProductImage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsMain")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductImage");
-                });
-
-            modelBuilder.Entity("E_Shopping.Domain.Entities.ProductVariant", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Stock")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductVariant");
                 });
 
             modelBuilder.Entity("E_Shopping.Infrastructure.Identity.AppRole", b =>
@@ -573,28 +527,6 @@ namespace E_Shopping.Infrastructure.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("E_Shopping.Domain.Entities.ProductImage", b =>
-                {
-                    b.HasOne("E_Shopping.Domain.Entities.Product", "Product")
-                        .WithMany("Images")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("E_Shopping.Domain.Entities.ProductVariant", b =>
-                {
-                    b.HasOne("E_Shopping.Domain.Entities.Product", "Product")
-                        .WithMany("Variants")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("E_Shopping.Infrastructure.Identity.AppUser", b =>
                 {
                     b.HasOne("E_Shopping.Domain.Entities.Address", "Addresses")
@@ -670,13 +602,6 @@ namespace E_Shopping.Infrastructure.Migrations
             modelBuilder.Entity("E_Shopping.Domain.Entities.Order", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("E_Shopping.Domain.Entities.Product", b =>
-                {
-                    b.Navigation("Images");
-
-                    b.Navigation("Variants");
                 });
 
             modelBuilder.Entity("E_Shopping.Infrastructure.Identity.AppUser", b =>

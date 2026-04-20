@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using E_Shopping.Application.DTOs.CategoryDTos;
+using E_Shopping.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -12,6 +14,11 @@ namespace E_Shopping.WebUI.Controllers
     public class CategoryController : Controller
     {
 
+        private readonly ICategoryService _categoryService;
+        public CategoryController(ICategoryService categoryService)
+        {
+            _categoryService = categoryService;
+        }
         public IActionResult Index()
         {
             return View();
@@ -19,9 +26,10 @@ namespace E_Shopping.WebUI.Controllers
 
         [Route("/Admin/[controller]/List")]
         [HttpGet]
-        public IActionResult CAIndex()
+        public async Task<IActionResult> CAIndex()
         {
-            return View();
+            var categories = await _categoryService.GetAllCategoriesAsync();
+            return View(categories);
         }
 
         [Route("/Admin/[controller]/Create")]
@@ -30,9 +38,26 @@ namespace E_Shopping.WebUI.Controllers
         {
             return View();
         }
-        [Route("/Admin/[controller]/Update")]
+
+        [Route("/Admin/[controller]/Create")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CACreate(CategoryCreateDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                await _categoryService.CreateCategoryAsync(model);
+                return RedirectToAction("CAIndex");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Lütfen tüm alanları doldurun.");
+            }
+            return View(model);
+        }
+        [Route("/Admin/[controller]/Update/{id}")]
         [HttpGet]
-        public IActionResult CAUpdate()
+        public IActionResult CAUpdate(int id)
         {
             return View();
         }
