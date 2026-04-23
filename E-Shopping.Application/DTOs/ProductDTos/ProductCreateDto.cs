@@ -21,7 +21,6 @@ namespace E_Shopping.Application.DTOs.ProductDTos
         [Required(ErrorMessage = "Kategori zorunludur.")]
         public int CategoryId { get; set; }
         public SelectList? Categories { get; set; }
-        public IFormFile Images { get; set; }
-
+        public List<IFormFile> Images { get; set; }
     }
 }

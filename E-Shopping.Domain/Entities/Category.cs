@@ -10,8 +10,8 @@ namespace E_Shopping.Domain.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public DateTime CreateDate { get; set; } = DateTime.Now;
-        public DateTime UpdateDate { get; set; } = DateTime.Now;
+        public DateTime CreateDate { get; set; }
+        public DateTime UpdateDate { get; set; }
         public List<Product> Products { get; set; }
     }
 }

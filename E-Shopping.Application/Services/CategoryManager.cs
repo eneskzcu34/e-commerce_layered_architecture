@@ -19,6 +19,14 @@ namespace E_Shopping.Application.Services
             _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
+
+        public async Task CategoryUpdate(int id, CategoryUpdateDtos model)
+        {
+            var category = await _categoryRepository.GetByIdAsync(id);
+            var result = _mapper.Map(model, category);
+            _categoryRepository.Update(result);
+        }
+
         public async Task CreateCategoryAsync(CategoryCreateDto model)
         {
             var category = _mapper.Map<Category>(model);
@@ -30,6 +38,13 @@ namespace E_Shopping.Application.Services
             var categories = await _categoryRepository.GetAllWithIncludesAsync(x => x.Products);
             var categoryListDtos = _mapper.Map<List<CategoryListDto>>(categories);
             return categoryListDtos;
+        }
+
+        public async Task<CategoryUpdateDtos> GetCategoryUpdate(int id)
+        {
+            var category = await _categoryRepository.GetByIdAsync(id);
+            return _mapper.Map<CategoryUpdateDtos>(category);
+
         }
     }
 }

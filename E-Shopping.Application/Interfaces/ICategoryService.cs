@@ -10,5 +10,7 @@ namespace E_Shopping.Application.Interfaces
     {
         Task CreateCategoryAsync(CategoryCreateDto model);
         Task<List<CategoryListDto>> GetAllCategoriesAsync();
+        Task<CategoryUpdateDtos> GetCategoryUpdate(int id);
+        Task CategoryUpdate(int id, CategoryUpdateDtos model);
     }
 }

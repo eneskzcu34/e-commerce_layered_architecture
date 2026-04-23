@@ -56,28 +56,27 @@
 
     /* IMAGE */
     .image-upload-box {
-        border: 2px dashed #d1d5db;
+        border: 2px dashed #9ca3af;
         border-radius: 10px;
         padding: 20px;
         text-align: center;
         cursor: pointer;
+        width: 100%;
+
     }
 
     .preview-container {
         margin-top: 0px;
-
     }
 
     .img-preview {
         border: 1px solid #e5e7eb;
         border-radius: 10px;
-        padding: 5px;
-
     }
 
     .img-preview img {
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
         object-fit: cover;
         border-radius: 6px;
     }
@@ -91,4 +90,8 @@
 
     .img-preview.active {
         border: 2px solid #22c55e;
+    }
+
+    tbody tr td {
+        align-content: center;
     }

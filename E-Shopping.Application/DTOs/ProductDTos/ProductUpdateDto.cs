@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using E_Shopping.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -25,8 +26,8 @@ namespace E_Shopping.Application.DTOs.ProductDTos
         [Required(ErrorMessage = "Kategori zorunludur.")]
         public int CategoryId { get; set; }
         public SelectList? Categories { get; set; }
-        [ValidateNever]
-        public string ImageUrl { get; set; }
-        public IFormFile? NewImage { get; set; }
+        public List<ProductImagesDto> Images { get; set; } = new();
+        public List<IFormFile>? NewImages { get; set; }
+        public int? SelectedMainImageId { get; set; }
     }
 }

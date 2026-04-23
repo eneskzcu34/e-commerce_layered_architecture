@@ -57,9 +57,27 @@ namespace E_Shopping.WebUI.Controllers
         }
         [Route("/Admin/[controller]/Update/{id}")]
         [HttpGet]
-        public IActionResult CAUpdate(int id)
+        public async Task<IActionResult> CAUpdate(int id)
         {
-            return View();
+            var category = await _categoryService.GetCategoryUpdate(id);
+            return View(category);
+        }
+
+        [Route("/Admin/[controller]/Update/{id}")]
+        [HttpPost]
+        public async Task<IActionResult> CAUpdate(int id, CategoryUpdateDtos model)
+        {
+            if (id == model.Id)
+                if (ModelState.IsValid)
+                {
+                    await _categoryService.CategoryUpdate(id, model);
+                    return RedirectToAction("CAIndex");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Böyle Bir Kategori Yok");
+                }
+            return View(model);
         }
     }
 }

@@ -26,27 +26,33 @@ namespace E_Shopping.Application.Services
 
         public async Task CreateProductAsync(ProductCreateDto model)
         {
+            if (model.Images == null || !model.Images.Any())
+                return;
             var product = _mapper.Map<Product>(model);
-            if (model.Images != null && model.Images.Length > 0)
+            product.Images = new List<ProductImages>();
+
+            foreach (var file in model.Images)
             {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
-                if (!Directory.Exists(uploadsFolder))
-                    Directory.CreateDirectory(uploadsFolder);
-                string fileExtension = Path.GetExtension(model.Images.FileName);
-                string uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+                var path = Path.Combine(_webHostEnvironment.WebRootPath, "images/products", fileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
                 {
-                    await model.Images.CopyToAsync(fileStream);
+                    await file.CopyToAsync(stream);
                 }
-                product.ImageUrl = "/images/products/" + uniqueFileName;
+
+                product.Images.Add(new ProductImages
+                {
+                    ImageUrl = "/images/products/" + fileName,
+                    IsMain = !product.Images.Any(x => x.IsMain)
+                });
             }
             await _productRepository.AddAsync(product);
         }
 
         public async Task<List<ProductListDto>> GetAllProductsAsync()
         {
-            var products = await _productRepository.GetAllWithIncludesAsync(c => c.Category);
+            var products = await _productRepository.GetAllWithIncludesAsync(c => c.Category, p => p.Images);
             return _mapper.Map<List<ProductListDto>>(products).ToList();
         }
 
@@ -58,39 +64,52 @@ namespace E_Shopping.Application.Services
 
         public async Task<ProductUpdateDto> GetUpdateProductAsync(int id)
         {
-            var product = await _productRepository.GetSingleAsync(p => p.Id == id, p => p.Category);
-            return _mapper.Map<ProductUpdateDto>(product);
+            var product = await _productRepository.GetSingleAsync(p => p.Id == id, p => p.Category, p => p.Images);
+            var dto = _mapper.Map<ProductUpdateDto>(product);
+            dto.Images ??= new List<ProductImagesDto>();
+            return dto;
         }
 
         public async Task UpdateProductAsync(int id, ProductUpdateDto model)
         {
-            var product = await _productRepository.GetSingleAsync(p => p.Id == id, p => p.Category);
+            var product = await _productRepository.GetSingleAsync(p => p.Id == id, p => p.Category, p => p.Images);
             if (product == null) return;
             _mapper.Map(model, product);
-            if (model.NewImage != null)
+
+            if (model.SelectedMainImageId.HasValue)
             {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
-
-                if (!Directory.Exists(uploadsFolder))
-                    Directory.CreateDirectory(uploadsFolder);
-
-                if (!string.IsNullOrEmpty(product.ImageUrl))
+                foreach (var img in product.Images)
                 {
-                    var oldPath = Path.Combine(_webHostEnvironment.WebRootPath, product.ImageUrl.TrimStart('/'));
-
-                    if (File.Exists(oldPath))
-                        File.Delete(oldPath);
+                    img.IsMain = img.Id == model.SelectedMainImageId.Value;
                 }
-                string extension = Path.GetExtension(model.NewImage.FileName);
-                string uniqueName = Guid.NewGuid().ToString() + extension;
-                string filePath = Path.Combine(uploadsFolder, uniqueName);
+            }
+            string folder = Path.Combine(_webHostEnvironment.WebRootPath, "images/products");
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
+            for (int i = 0; i < model.Images.Count; i++)
+            {
+                var dtoImage = model.Images[i];
+
+                if (dtoImage.NewImage != null && dtoImage.NewImage.Length > 0)
                 {
-                    await model.NewImage.CopyToAsync(stream);
-                }
+                    var existingImage = product.Images.FirstOrDefault(x => x.Id == dtoImage.Id);
 
-                product.ImageUrl = "/images/products/" + uniqueName;
+                    if (existingImage != null)
+                    {
+                        var oldPath = Path.Combine(_webHostEnvironment.WebRootPath, existingImage.ImageUrl.TrimStart('/')
+                        );
+
+                        if (File.Exists(oldPath))
+                            File.Delete(oldPath);
+
+                        var fileName = Guid.NewGuid() + Path.GetExtension(dtoImage.NewImage.FileName);
+                        var path = Path.Combine(folder, fileName);
+
+                        using var stream = new FileStream(path, FileMode.Create);
+                        await dtoImage.NewImage.CopyToAsync(stream);
+
+                        existingImage.ImageUrl = "/images/products/" + fileName;
+                    }
+                }
             }
 
             _productRepository.Update(product);

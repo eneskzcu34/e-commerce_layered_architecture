@@ -9,5 +9,6 @@ namespace E_Shopping.Application.DTOs.CategoryDTos
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public DateTime CreateDate { get; set; } = DateTime.Now;
     }
 }

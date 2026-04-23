@@ -12,11 +12,11 @@ namespace E_Shopping.Domain.Entities
         public string Description { get; set; }
         public decimal Price { get; set; }
         public int Stock { get; set; }
-        public string ImageUrl { get; set; }
         public bool IsActive { get; set; } = true;
         public DateTime CreateDate { get; set; } = DateTime.Now;
         public DateTime UpdateDate { get; set; } = DateTime.Now;
         public int CategoryId { get; set; }
         public Category Category { get; set; }
+        public ICollection<ProductImages> Images { get; set; }
     }
 }

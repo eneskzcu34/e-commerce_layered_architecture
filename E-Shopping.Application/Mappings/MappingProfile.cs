@@ -13,23 +13,31 @@ namespace E_Shopping.Application.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<Product, ProductListDto>().ForMember(dest => dest.CategoryName,
-                                                            opt => opt.MapFrom(src => src.Category.Name)).ReverseMap();
-            CreateMap<Product, ProductCreateDto>().ReverseMap();
+            CreateMap<Product, ProductListDto>()
+                .ForMember(dest => dest.CategoryName,
+                    opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.MainImageUrl,
+                    opt => opt.MapFrom(src =>
+                        src.Images.FirstOrDefault(x => x.IsMain).ImageUrl
+                    ));
+
+            CreateMap<ProductCreateDto, Product>()
+                .ForMember(dest => dest.Images, opt => opt.Ignore());
+
+            CreateMap<Product, ProductCreateDto>();
+            CreateMap<ProductUpdateDto, Product>()
+                .ForMember(dest => dest.Images, opt => opt.Ignore());
+
             CreateMap<Product, ProductUpdateDto>();
 
-            CreateMap<ProductUpdateDto, Product>()
-                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
-
-
             CreateMap<Product, ProductGetByIdDto>().ReverseMap();
-
+            CreateMap<ProductImages, ProductImagesDto>().ReverseMap();
             /*------------------------------------------------------------*/
 
             CreateMap<Category, CategoryCreateDto>().ReverseMap();
             CreateMap<Category, CategoryListDto>().ForMember(dest => dest.ProductCount,
                                                             opt => opt.MapFrom(src => src.Products.Count));
-
+            CreateMap<CategoryUpdateDtos, Category>().ReverseMap();
         }
     }
 }
