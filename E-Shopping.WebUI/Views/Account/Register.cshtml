@@ -1,31 +1,35 @@
-<div class="ec-register-page">
+@model RegisterDTo
 
-    <div class="ec-register-card row g-0">
-
-        <!-- SOL -->
-        <div class="col-md-6 ec-register-left">
-            <h2>Aramıza Katıl 🎉</h2>
-            <p>Hemen kayıt ol, fırsatları kaçırma!</p>
-        </div>
-
-        <!-- SAĞ -->
-        <div class="col-md-6">
-
-            <div class="ec-register-form">
-
-                <h3 class="ec-register-title">Kayıt Ol</h3>
-
-                <input type="text" placeholder="Ad Soyad" class="ec-input">
-                <input type="email" placeholder="E-posta" class="ec-input">
-                <input type="password" placeholder="Şifre" class="ec-input">
-                <input type="password" placeholder="Şifre Tekrar" class="ec-input">
-
-                <button class="ec-register-btn">Kayıt Ol</button>
-
-                <div class="ec-register-links">
-                    Zaten hesabın var mı? <a href="/Account/Login">Giriş Yap</a>
+<form asp-controller="Account" asp-action="Register" method="post">
+    <div class="ec-register-page">
+        <div class="ec-register-card row g-0">
+            <div class="col-md-6 ec-register-left">
+                <h2>Aramıza Katıl 🎉</h2>
+                <p>Hemen kayıt ol, fırsatları kaçırma!</p>
+            </div>
+            <div class="col-md-6">
+                <div class="ec-register-form">
+                    <h3 class="ec-register-title">Kayıt Ol</h3>
+                    <div asp-validation-summary="All" class="text-danger mb-2"></div>
+                      <div class="row g-2">
+                        <div class="col-md-6">
+                            <input type="text" asp-for="FirstName" placeholder="Ad" class="ec-input">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" asp-for="LastName" placeholder="Soyad" class="ec-input">
+                        </div>
+                    </div>
+                    <input type="email" asp-for="Email" placeholder="E-posta" class="ec-input">  
+                    <input type="password" asp-for="Password" placeholder="Şifre" class="ec-input">
+                    <input type="password" asp-for="ConfirmPassword" placeholder="Şifre Tekrar" class="ec-input">
+                    <button type="submit" class="ec-register-btn">Kayıt Ol</button>
+                    <div class="ec-register-links mt-2">
+                        Zaten hesabın var mı?
+                        <a href="/Account/Login">Giriş Yap</a>
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
-</div>
+</form>

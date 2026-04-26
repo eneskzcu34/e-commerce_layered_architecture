@@ -30,6 +30,10 @@ namespace E_Shopping.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -46,11 +50,10 @@ namespace E_Shopping.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("AppUserId")
+                        .IsUnique();
 
                     b.ToTable("Addresses");
                 });
@@ -134,6 +137,7 @@ namespace E_Shopping.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AppUserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("OrderDate")
@@ -145,12 +149,10 @@ namespace E_Shopping.Infrastructure.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId");
+                    b.HasIndex("AppUserId")
+                        .IsUnique();
 
                     b.ToTable("Orders");
                 });
@@ -313,9 +315,6 @@ namespace E_Shopping.Infrastructure.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("AddressesId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -326,6 +325,14 @@ namespace E_Shopping.Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -361,8 +368,6 @@ namespace E_Shopping.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressesId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -481,6 +486,15 @@ namespace E_Shopping.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("E_Shopping.Domain.Entities.Address", b =>
+                {
+                    b.HasOne("E_Shopping.Infrastructure.Identity.AppUser", null)
+                        .WithOne("Addresses")
+                        .HasForeignKey("E_Shopping.Domain.Entities.Address", "AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("E_Shopping.Domain.Entities.CartItem", b =>
                 {
                     b.HasOne("E_Shopping.Domain.Entities.Cart", "Cart")
@@ -503,8 +517,10 @@ namespace E_Shopping.Infrastructure.Migrations
             modelBuilder.Entity("E_Shopping.Domain.Entities.Order", b =>
                 {
                     b.HasOne("E_Shopping.Infrastructure.Identity.AppUser", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("AppUserId");
+                        .WithOne("Order")
+                        .HasForeignKey("E_Shopping.Domain.Entities.Order", "AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("E_Shopping.Domain.Entities.OrderItem", b =>
@@ -557,17 +573,6 @@ namespace E_Shopping.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("E_Shopping.Infrastructure.Identity.AppUser", b =>
-                {
-                    b.HasOne("E_Shopping.Domain.Entities.Address", "Addresses")
-                        .WithMany()
-                        .HasForeignKey("AddressesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Addresses");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -643,7 +648,11 @@ namespace E_Shopping.Infrastructure.Migrations
 
             modelBuilder.Entity("E_Shopping.Infrastructure.Identity.AppUser", b =>
                 {
-                    b.Navigation("Orders");
+                    b.Navigation("Addresses")
+                        .IsRequired();
+
+                    b.Navigation("Order")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

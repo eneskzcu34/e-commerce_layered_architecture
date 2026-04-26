@@ -27,7 +27,7 @@ namespace E_Shopping.Application.DTOs.ProductDTos
         public int CategoryId { get; set; }
         public SelectList? Categories { get; set; }
         public List<ProductImagesDto> Images { get; set; } = new();
-        public List<IFormFile>? NewImages { get; set; }
+        // public List<IFormFile>? NewImages { get; set; }
         public int? SelectedMainImageId { get; set; }
     }
 }

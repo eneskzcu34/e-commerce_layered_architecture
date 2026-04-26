@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using E_Shopping.Application.Interfaces;
 using E_Shopping.Application.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace E_Shopping.Application.DependencyInjection
@@ -14,6 +15,7 @@ namespace E_Shopping.Application.DependencyInjection
         {
             services.AddScoped<IProductService, ProductManager>();
             services.AddScoped<ICategoryService, CategoryManager>();
+            
         }
     }
 }

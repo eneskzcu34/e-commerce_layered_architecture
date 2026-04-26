@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace E_Shopping.Infrastructure.Identity
 {
-    public class AppRole : IdentityRole<string>
+    public class AppRole : IdentityRole
     {
-
+        
     }
 }

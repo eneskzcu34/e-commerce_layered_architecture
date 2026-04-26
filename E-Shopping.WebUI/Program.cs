@@ -1,6 +1,7 @@
 using E_Shopping.Application.DependencyInjection;
 using E_Shopping.Infrastructure.DependencyInjection;
 using E_Shopping.Infrastructure.Persistence.Context;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,9 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSqlServer<AppDbContext>(builder.Configuration.GetConnectionString("MyDbConnections"));
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Lockout.MaxFailedAccessAttempts = 3;      
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3); 
+    options.Lockout.AllowedForNewUsers = true;
+});
 
 var app = builder.Build();
 
@@ -25,6 +31,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapStaticAssets();

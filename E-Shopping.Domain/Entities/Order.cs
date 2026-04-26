@@ -8,8 +8,7 @@ namespace E_Shopping.Domain.Entities
     public class Order
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
-
+        public string AppUserId { get; set; }
         public DateTime OrderDate { get; set; }
         public decimal TotalPrice { get; set; }
 
